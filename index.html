@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магазин аккаунтов Telegram и ВК</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 15px;
+            background-image: linear-gradient(to bottom, #f0f8ff, #e6f7ff);
+        }
+        
+        .header {
+            background: linear-gradient(to right, #0088cc, #00a2e8);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: rotate(30deg);
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 32px;
+        }
+        
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+        
+        .nav a:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .section-title {
+            color: #0088cc;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 24px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0088cc;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(to right, #0088cc, #00a2e8);
+            border-radius: 2px;
+        }
+        
+        .product {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            transition: background 0.3s;
+        }
+        
+        .product:hover {
+            background: #f9f9f9;
+        }
+        
+        .product-info {
+            flex: 1;
+            min-width: 150px;
+            margin-bottom: 10px;
+        }
+        
+        .price {
+            color: #0088cc;
+            font-weight: bold;
+            margin: 0 15px;
+            font-size: 18px;
+        }
+        
+        .out-of-stock {
+            color: #ff4444;
+            font-weight: bold;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            background: #0088cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .btn:hover {
+            background: #006da3;
+            transform: scale(1.05);
+        }
+        
+        .btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .btn:disabled:hover {
+            transform: none;
+        }
+        
+        .contacts {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .telegram-btn {
+            display: inline-block;
+            background: #0088cc;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 10px 5px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .telegram-btn:hover {
+            background: #006da3;
+            transform: scale(1.05);
+        }
+        
+        /* Стили для корзины */
+        .cart-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .cart-btn {
+            background: #0088cc;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .cart-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: red;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .cart-modal {
+            display: none;
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 350px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            padding: 20px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-total {
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: right;
+            font-size: 18px;
+        }
+        
+        .checkout-btn {
+            background: #0088cc;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .checkout-btn:hover {
+            background: #006da3;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+        }
+        
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 768px) {
+            .product {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .product-actions {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                margin-top: 15px;
+            }
+            
+            .cart-modal {
+                width: 90%;
+                left: 5%;
+                right: 5%;
+                bottom: 90px;
+                max-height: 70vh;
+            }
+            
+            .nav a {
+                margin-bottom: 8px;
+                font-size: 14px;
+                padding: 8px 15px;
+            }
+            
+            .product-table {
+                overflow-x: auto;
+                display: block;
+                width: 100%;
+            }
+            
+            table {
+                width: 100%;
+                min-width: 600px;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+                font-size: 14px;
+            }
+            
+            .cart-container {
+                bottom: 70px;
+                right: 15px;
+            }
+            
+            .cart-btn {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .logo {
+                font-size: 22px;
+            }
+            
+            .logo i {
+                font-size: 26px;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+            
+            .payment-methods {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .payment-method {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .telegram-btn {
+                display: block;
+                margin: 10px auto;
+                width: 100%;
+                max-width: 250px;
+                font-size: 14px;
+                padding: 10px;
+            }
+            
+            .channel-link {
+                font-size: 14px;
+                padding: 10px;
+            }
+            
+            .checkout-modal {
+                width: 95% !important;
+                left: 2.5% !important;
+                max-height: 85vh !important;
+            }
+            
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .stat-item {
+                width: 100%;
+                max-width: 250px;
+                margin: 8px 0;
+            }
+        }
+        
+        /* Таблицы */
+        .product-table {
+            width: 100%;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .product-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .product-table th, .product-table td {
+            padding: 15px 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .product-table th {
+            background-color: #0088cc;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .product-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .product-table tr:hover {
+            background-color: #f0f8ff;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .channel-link {
+            display: block;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: linear-gradient(to right, #0088cc, #00a2e8);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        
+        .channel-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .note {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        
+        .badge-standard {
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        .badge-vip {
+            background-color: #9c27b0;
+            color: white;
+        }
+        
+        .badge-vip-plus {
+            background-color: #ff9800;
+            color: white;
+        }
+        
+        .badge-elite {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .badge-premium {
+            background-color: #2196f3;
+            color: white;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin: 10px;
+            min-width: 150px;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #0088cc;
+            margin-bottom: 5px;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        
+        .faq-question {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #0088cc;
+        }
+        
+        .payment-methods {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .payment-method {
+            padding: 10px 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-method:hover, .payment-method.selected {
+            background: #0088cc;
+            color: white;
+        }
+        
+        .discount-banner {
+            background: linear-gradient(to right, #ff9800, #f44336);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        
+        .review {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .review-date {
+            color: #888;
+        }
+        
+        .tab-container {
+            margin: 20px 0;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            background: #0088cc;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .commission-note {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #4caf50;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .payment-info {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .payment-final {
+            background-color: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ff9800;
+            text-align: center;
+        }
+        
+        .checkout-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+            z-index: 1001;
+            padding: 25px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .bank-select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .premium-info {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(to right, #2196f3, #21CBF3);
+            color: white;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <i class="fab fa-telegram"></i>
+            🔥 Магазин аккаунтов Telegram и ВК 🔥
+        </div>
+        <div class="nav">
+            <a href="#telegram">📱 Telegram</a>
+            <a href="#vk">👥 ВКонтакте</a>
+            <a href="#premium">⭐ Premium</a>
+            <a href="#projects">🚀 Наши проекты</a>
+            <a href="#contacts">📞 Контакты</a>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-item">
+            <div class="stat-number">1000+</div>
+            <div>Проданных аккаунтов</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">99%</div>
+            <div>Довольных клиентов</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">24/7</div>
+            <div>Поддержка</div>
+        </div>
+    </div>
+
+    <div class="discount-banner">
+        🔥 Скидки до 25% при покупке аккаунтов оптом от 10 штук! Успейте приобрести качественные аккаунты по выгодной цене!
+    </div>
+
+    <div class="section" id="telegram">
+        <h2 class="section-title">📱 Аккаунты Telegram</h2>
+        
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="openTab(event, 'standard-tab')">Стандартные</button>
+                <button class="tab-btn" onclick="openTab(event, 'premium-tab')">С Telegram Premium</button>
+                <button class="tab-btn" onclick="openTab(event, 'aged-tab')">Возрастные</button>
+                <button class="tab-btn" onclick="openTab(event, 'beautiful-tab')">Красивые номера</button>
+            </div>
+            
+            <div id="standard-tab" class="tab-content active">
+                <div class="product-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Страна</th>
+                                <th>Тип</th>
+                                <th>Цена</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>👾 Случайная страна</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>99 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Случайная страна (Standard)', 99)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>👾 Случайная страна</td>
+                                <td><span class="badge badge-standard">Standard+</span></td>
+                                <td>139 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Случайная страна (Standard+)', 139)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>👾 Случайная страна</td>
+                                <td><span class="badge badge-vip">VIP</span></td>
+                                <td>209 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Случайная страна (VIP)', 209)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>👾 Случайная страна</td>
+                                <td><span class="badge badge-vip-plus">VIP+</span></td>
+                                <td>333 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Случайная страна (VIP+)', 333)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>👾 Случайная страна</td>
+                                <td><span class="badge badge-elite">Elite</span> (с Telegram Premium)</td>
+                                <td>699 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Случайная страна (Elite)', 699)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇳🇬 Нигерия (+234)</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>99 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Нигерия Standard', 99)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇳🇬 Нигерия (+234)</td>
+                                <td><span class="badge badge-standard">Standard</span> (отлёжка 6-12 месяцев)</td>
+                                <td>119 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Нигерия Standard (отлёжка)', 119)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇮🇳 Индия (+91)</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>90 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Индия Standard', 90)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇮🇳 Индия (+91)</td>
+                                <td><span class="badge badge-standard">Standard</span> (отлёжка 6-12 месяцев)</td>
+                                <td>119 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Индия Standard (отлёжка)', 119)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇺🇸 США (+1)</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>149 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('США Standard', 149)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇺🇸 США (+1)</td>
+                                <td><span class="badge badge-vip">VIP</span></td>
+                                <td>199 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('США VIP', 199)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇺🇸 США (+1)</td>
+                                <td><span class="badge badge-vip-plus">VIP+</span></td>
+                                <td>299 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('США VIP+', 299)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇨🇴 Колумбия (+57)</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>119 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Колумбия Standard', 119)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇨🇴 Колумбия (+57)</td>
+                                <td><span class="badge badge-vip">VIP</span></td>
+                                <td>199 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Колумбия VIP', 199)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇬🇭 Гана (+233)</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>90 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Гана Standard', 90)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇸🇦 Саудовская Аравия (+966)</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>99 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Саудовская Аравия Standard', 99)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇮🇩 Индонезия (+62)</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>109 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Индонезия Standard', 109)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇧🇩 Бангладеш (+880)</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>209 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Бангладеш Standard', 209)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇺🇦 Украина (+380)</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>319 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Украина Standard', 319)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇺🇦 Украина (+380)</td>
+                                <td><span class="badge badge-vip">VIP</span></td>
+                                <td>589 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Украина VIP', 589)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇰🇿 Казахстан (+7)</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>289 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Казахстан Standard', 289)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇷🇺 Россия (+7)</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>389 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Россия Standard', 389)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇷🇺 Россия (+7)</td>
+                                <td><span class="badge badge-vip">VIP</span></td>
+                                <td>499 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Россия VIP', 499)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇷🇺 Россия (+7)</td>
+                                <td><span class="badge badge-vip-plus">VIP+</span></td>
+                                <td>555 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Россия VIP+', 555)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇬🇧 Великобритания (+44)</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>222 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Великобритания Standard', 222)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇬🇧 Великобритания (+44)</td>
+                                <td><span class="badge badge-vip">VIP</span></td>
+                                <td>399 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Великобритания VIP', 399)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇬🇧 Великобритания (+44)</td>
+                                <td><span class="badge badge-vip-plus">VIP+</span></td>
+                                <td>489 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Великобритания VIP+', 489)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇺🇿 Узбекистан (+998)</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>199 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Узбекистан Standard', 199)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇦🇪 ОАЭ (+971)</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>399 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('ОАЭ Standard', 399)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇦🇪 ОАЭ (+971)</td>
+                                <td><span class="badge badge-vip">VIP</span></td>
+                                <td>449 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('ОАЭ VIP', 449)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇪🇸 Испания (+34)</td>
+                                <td><span class="badge badge-standard">Standard</span></td>
+                                <td>289 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Испания Standard', 289)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇪🇸 Испания (+34)</td>
+                                <td><span class="badge badge-vip">VIP</span></td>
+                                <td>319 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Испания VIP', 319)">В корзину</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="premium-tab" class="tab-content">
+                <div class="product-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Страна</th>
+                                <th>Тип</th>
+                                <th>Цена</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Случайная страна</td>
+                                <td><span class="badge badge-premium">Telegram Premium</span></td>
+                                <td>239-470 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Случайная страна (Premium)', 239)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇺🇸 США (+1)</td>
+                                <td><span class="badge badge-premium">Telegram Premium</span></td>
+                                <td>488 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('США Premium', 488)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇺🇸 США (+1)</td>
+                                <td><span class="badge badge-premium">Telegram Premium</span> (прогретый)</td>
+                                <td>570 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('США Premium (прогретый)', 570)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇺🇸 США (+1)</td>
+                                <td><span class="badge badge-premium">Telegram Premium</span> (отлёга 60+ дней)</td>
+                                <td>699 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('США Premium (отлёга 60+ дней)', 699)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇩🇪 Германия (+49)</td>
+                                <td><span class="badge badge-premium">Telegram Premium</span></td>
+                                <td>470 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Германия Premium', 470)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇩🇪 Германия (+49)</td>
+                                <td><span class="badge badge-premium">Telegram Premium</span> (прогретый)</td>
+                                <td>568 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Германия Premium (прогретый)', 568)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇩🇪 Германия (+49)</td>
+                                <td><span class="badge badge-premium">Telegram Premium</span> (большая отлёга)</td>
+                                <td>679 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Германия Premium (большая отлёга)', 679)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇨🇦 Канада (+1)</td>
+                                <td><span class="badge badge-premium">Telegram Premium</span></td>
+                                <td>583 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Канада Premium', 583)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇨🇦 Канада (+1)</td>
+                                <td><span class="badge badge-premium">Telegram Premium</span> (прогретый, большая отлёга)</td>
+                                <td>759 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Канада Premium (прогретый)', 759)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇬🇧 Великобритания (+44)</td>
+                                <td><span class="badge badge-premium">Telegram Premium</span> (большая отлёга)</td>
+                                <td>809 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Великобритания Premium', 809)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇺🇦 Украина (+380)</td>
+                                <td><span class="badge badge-premium">Telegram Premium</span> (чистейший)</td>
+                                <td>1175 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Украина Premium', 1175)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇬🇷 Греция / 🇮🇩 Индонезия</td>
+                                <td><span class="badge badge-premium">Telegram Premium</span></td>
+                                <td>800 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Греция/Индонезия Premium', 800)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Разные страны</td>
+                                <td><span class="badge badge-premium">Telegram Premium</span> (долгая подписка, есть звёзды)</td>
+                                <td>от 1309 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Premium с звёздами', 1309)">В корзину</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="aged-tab" class="tab-content">
+                <div class="product-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Год создания</th>
+                                <th>Описание</th>
+                                <th>Цена</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2013-2014</td>
+                                <td>Аккаунты с большой отлёжкой</td>
+                                <td>от 3890 руб</td>
+                                <td>Под заказ</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Аккаунт 2013-2014', 3890)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2015-2016</td>
+                                <td>Аккаунты с большой отлёжкой</td>
+                                <td>от 2690 руб</td>
+                                <td>Под заказ</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Аккаунт 2015-2016', 2690)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2017</td>
+                                <td>Аккаунты с отлёжкой</td>
+                                <td>1690 руб</td>
+                                <td>Под заказ</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Аккаунт 2017', 1690)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2018</td>
+                                <td>Аккаунты с отлёжкой</td>
+                                <td>799 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Аккаунт 2018', 799)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2019</td>
+                                <td>Аккаунты с отлёжкой</td>
+                                <td>689 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Аккаунт 2019', 689)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2020</td>
+                                <td>Аккаунты с отлёжкой</td>
+                                <td>599 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Аккаунт 2020', 599)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2021</td>
+                                <td>Аккаунты с отлёжкой</td>
+                                <td>489 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Аккаунт 2021', 489)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2022</td>
+                                <td>Аккаунты с отлёжкой</td>
+                                <td>399 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Аккаунт 2022', 399)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2023</td>
+                                <td>Аккаунты с отлёжкой</td>
+                                <td>289 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Аккаунт 2023', 289)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Разные года</td>
+                                <td>Аккаунты с отлёжкой (могут быть 2018 г)</td>
+                                <td>от 389 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Аккаунт с отлёжкой', 389)">В корзину</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="beautiful-tab" class="tab-content">
+                <div class="product-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Страна</th>
+                                <th>Описание</th>
+                                <th>Цена</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>🇮🇳 Индия (+91)</td>
+                                <td>Красивый номер (отлёжка 3+ года)</td>
+                                <td>419 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Индия красивый номер', 419)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇲🇾 Малайзия (+60)</td>
+                                <td>Красивый номер (отлёжка 3+ года)</td>
+                                <td>509 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Малайзия красивый номер', 509)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>🇷🇺 Россия (+7)</td>
+                                <td>Красивый номер (отлёжка 3+ года)</td>
+                                <td>799 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Россия красивый номер', 799)">В корзину</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Разные страны</td>
+                                <td>Красивые номера</td>
+                                <td>от 319 руб</td>
+                                <td>В наличии</td>
+                                <td class="product-actions">
+                                    <button class="btn" onclick="addToCart('Красивый номер', 319)">В корзину</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="vk">
+        <h2 class="section-title">👥 Аккаунты ВКонтакте</h2>
+        <div class="note">
+            📋 Полный прайс-лист на аккаунты ВК доступен по ссылке: 
+            <a href="https://t.me/account_tg_virtual/26" target="_blank" style="color: #0088cc; font-weight: bold;">https://t.me/account_tg_virtual/26</a>
+        </div>
+        
+        <div class="product-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Тип аккаунта</th>
+                        <th>Описание</th>
+                        <th>Цена</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-standard">Стандарт</span></td>
+                        <td>Обычный аккаунт с базовыми возможностями</td>
+                        <td>200 руб</td>
+                        <td>В наличии</td>
+                        <td class="product-actions">
+                            <button class="btn" onclick="addToCart('ВК Стандарт', 200)">В корзину</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-vip">Премиум</span></td>
+                        <td>Аккаунт с расширенными возможностями</td>
+                        <td>400 руб</td>
+                        <td>В наличии</td>
+                        <td class="product-actions">
+                            <button class="btn" onclick="addToCart('ВК Премиум', 400)">В корзину</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-vip-plus">Бизнес</span></td>
+                        <td>Аккаунт для ведения бизнес-страницы</td>
+                        <td>600 руб</td>
+                        <td>В наличии</td>
+                        <td class="product-actions">
+                            <button class="btn" onclick="addToCart('ВК Бизнес', 600)">В корзину</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section" id="premium">
+        <h2 class="section-title">⭐ Telegram Premium и Звёзды</h2>
+        
+        <div class="premium-info">
+            <h3>🤖 Покупка через Telegram-бота</h3>
+            <p>Для покупки Telegram Premium подписки и Звёзд перейдите в нашего бота</p>
+            <a href="https://t.me/starsshop17_bot" class="telegram-btn" target="_blank" style="background: white; color: #2196f3; margin-top: 15px;">
+                <i class="fas fa-robot"></i> Перейти к боту
+            </a>
+        </div>
+    </div>
+
+    <div class="section" id="projects">
+        <h2 class="section-title">🚀 Наши проекты</h2>
+        
+        <a href="https://t.me/kirg17cannel" class="channel-link" target="_blank">
+            <i class="fab fa-telegram"></i> 🔒 VPN услуги, Прайс звонки, СМС рассылки и поиск информации
+        </a>
+        
+        <a href="https://t.me/account_tg_virtual" class="channel-link" target="_blank">
+            <i class="fab fa-telegram"></i> 💼 Продажа аккаунтов с привлечениями и розыгрышами
+        </a>
+    </div>
+
+    <div class="section" id="recommendations">
+        <h2 class="section-title">📝 Рекомендации по использованию аккаунтов</h2>
+        
+        <div class="note">
+            <ul>
+                <li>Аккаунты продаются в одни руки!</li>
+                <li>После входа в аккаунт, дайте ему отлежаться 24 часа.</li>
+                <li>По возможности заходите на аккаунт соответствующий страны с VPN или прокси.</li>
+                <li>После смены никнейма дайте так же отлежаться аккаунту, как минимум 2-4 часа.</li>
+                <li>Если Вы покупаете аккаунты оптом или как минимум от 4 разово, то желательно иметь копии Telegram, например: Nicegram, Swiftgram, iMe, Tele Messenger и т.д.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section" id="guarantees">
+        <h2 class="section-title">✅ Гарантии</h2>
+        
+        <div class="note">
+            <p>Гарантия на аккаунт тарифа Standard даётся 3 дня, на тариф VIP - 7 дней, на VIP+ две недели.</p>
+            <p>Но если Вы не соблюдали условия выше, то замена аккаунта может не производиться!</p>
+        </div>
+    </div>
+
+    <div class="section" id="reviews">
+        <h2 class="section-title">⭐ Отзывы клиентов</h2>
+        
+        <div class="review">
+            <div class="review-header">
+                <span>Покупатель 2025</span>
+                <span class="review-date">15.03.2025</span>
+            </div>
+            <p>Приобрёл несколько аккаунтов для работы. Качеством доволен, поддержка отвечает быстро и помогает с любыми вопросами. Рекомендую!</p>
+        </div>
+        
+        <div class="review">
+            <div class="review-header">
+                <span>Покупатель 2025</span>
+                <span class="review-date">02.02.2025</span>
+            </div>
+            <p>Брал аккаунт с Telegram Premium. Всё работает отлично уже несколько месяцев. Цены адекватные, сервис на уровне.</p>
+        </div>
+        
+        <div class="review">
+            <div class="review-header">
+                <span>Покупатель 2025</span>
+                <span class="review-date">20.01.2025</span>
+            </div>
+            <p>Заказывал аккаунты ВК для рекламы. Все аккаунты качественные, проблем с входом не было. Буду заказывать еще!</p>
+        </div>
+    </div>
+
+    <div class="section" id="faq">
+        <h2 class="section-title">❓ Частые вопросы (FAQ)</h2>
+        
+        <div class="faq-item">
+            <div class="faq-question">В чем разница между Standard, VIP и VIP+?</div>
+            <div class="faq-answer">Standard - базовые аккаунты с минимальной отлётом. VIP - аккаунты с большой отлётом, более прогретые, с историей активности. VIP+ - аккаунты с максимальной отлётом, полностью чистые, без контактов и с высокой надежностью.</div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">Что такое отлёга аккаунта?</div>
+            <div class="faq-answer">Отлёга аккаунта - это период времени, в течение которого аккаунт уже существует. Аккаунты с большой отлёгой (от 1 года) считаются более качественными и надежными.</div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">Как происходит оплата?</div>
+            <div class="faq-answer">Мы принимаем оплату через криптовалюту (USDT/TON), банковские карты, СБП и ЮMoney. После оформления заказа мы вышлем вам реквизиты для оплаты.</div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">Как быстро я получу аккаунт после оплаты?</div>
+            <div class="faq-answer">Обычно аккаунты отправляются в течение 5-15 минут после подтверждения оплаты. В редких случаях это может занять до 1 часа.</div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">Что делать, если аккаунт не работает?</div>
+            <div class="faq-answer">Если вы столкнулись с проблемами при использовании аккаунта, обратитесь в нашу поддержку. В рамках гарантии мы заменим неработающий аккаунт при условии соблюдения рекомендаций по использованию.</div>
+        </div>
+    </div>
+
+    <div class="section contacts" id="contacts">
+        <h2 class="section-title">📞 Контакты</h2>
+        <p>Для покупки или консультации напишите нам:</p>
+        
+        <div class="contacts">
+            <a href="https://t.me/KIRG_17" class="telegram-btn" target="_blank">
+                <i class="fab fa-telegram"></i> Написать продавцу
+            </a>
+            
+            <a href="https://t.me/managerkirga17" class="telegram-btn" target="_blank">
+                <i class="fab fa-telegram"></i> Написать менеджеру
+            </a>
+        </div>
+        
+        <h3>💳 Реквизиты для оплаты</h3>
+        
+        <div class="commission-note">
+            ❗️При переводе по СБП комиссии не будет, независимо от банка❗️
+        </div>
+        
+        <div class="payment-info">
+            <p>✅Оплата осуществляется по следующим реквизитам (как Вам удобно):</p>
+        </div>
+        
+        <div class="payment-methods">
+            <div class="payment-method" data-method="ЮMoney">
+                <i class="fas fa-money-bill-wave"></i> ЮMoney
+            </div>
+            <div class="payment-method" data-method="Карты">
+                <i class="fas fa-credit-card"></i> Банковские карты
+            </div>
+            <div class="payment-method" data-method="СБП">
+                <i class="fas fa-mobile-alt"></i> СБП
+            </div>
+            <div class="payment-method" data-method="Криптовалюта">
+                <i class="fab fa-bitcoin"></i> Криптовалюта
+            </div>
+        </div>
+        
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="openPaymentTab(event, 'cards-tab')">Карты</button>
+                <button class="tab-btn" onclick="openPaymentTab(event, 'crypto-tab')">Криптовалюта</button>
+                <button class="tab-btn" onclick="openPaymentTab(event, 'sbp-tab')">СБП</button>
+            </div>
+            
+            <div id="cards-tab" class="tab-content active">
+                <div class="note">
+                    <p>🏦 Альфа банк: 2200152917964960</p>
+                    <p>❤️ Т-Банк: 2200700808267560</p>
+                    <p>✅ Сбер банк: 2202208283494368</p>
+                    <p>✏️ Почта банк: 2200770631165505</p>
+                </div>
+            </div>
+            
+            <div id="crypto-tab" class="tab-content">
+                <div class="note">
+                    <p>👛 Кошелёк (USDT/TON, сеть TON):</p>
+                    <p style="word-break: break-all;">UQA_qFBvYKRAwn65kvRPxn2oqGBJffSQgQTetGicaxe6Rw2C</p>
+                    <p>Crypto bot (USDT/TON, сеть TON):</p>
+                    <p style="word-break: break-all;">UQBaC8g-1C54zpiUP1A9lOKJfnJVqI0u8VyPzBTxDGkLxjyt</p>
+                </div>
+            </div>
+            
+            <div id="sbp-tab" class="tab-content">
+                <div class="note">
+                    <p>📱 СБП (Альфа банк): 89218748626</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="payment-final">
+            <p>✅Пожалуйста, после оплаты скидывайте скрин перевода или чек</p>
+            <p>❤️С Уважением @KIRG_17</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        2025 Все права защищены
+    </div>
+
+    <!-- Корзина -->
+    <div class="cart-container">
+        <button class="cart-btn" onclick="toggleCart()">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" id="cartCount">0</span>
+        </button>
+        
+        <div class="cart-modal" id="cartModal">
+            <h3>🛒 Корзина</h3>
+            <div id="cartItems"></div>
+            <div class="cart-total" id="cartTotal">Итого: 0 руб</div>
+            <button class="checkout-btn" onclick="openCheckoutModal()">Оформить заказ</button>
+            <div class="empty-cart" id="emptyCart">Корзина пуста</div>
+        </div>
+    </div>
+
+    <!-- Модальное окно оформления заказа -->
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="checkout-modal" id="checkoutModal">
+        <button class="close-modal" onclick="closeCheckoutModal()">×</button>
+        <h3>✅ Оформление заказа</h3>
+        
+        <div class="form-group">
+            <label>Выберите способ оплаты:</label>
+            <select class="bank-select" id="paymentMethod">
+                <option value="ЮMoney">ЮMoney</option>
+                <option value="Карты">Банковские карты</option>
+                <option value="СБП">СБП</option>
+                <option value="Криптовалюта">Криптовалюта</option>
+            </select>
+        </div>
+        
+        <div class="form-group" id="bankContainer" style="display: none;">
+            <label>Выберите банк:</label>
+            <select class="bank-select" id="bankSelect">
+                <option value="Альфа банк">Альфа банк</option>
+                <option value="Т-Банк">Т-Банк</option>
+                <option value="Сбер банк">Сбер банк</option>
+                <option value="Почта банк">Почта банк</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Ваш Telegram для связи:</label>
+            <input type="text" id="userTelegram" placeholder="@username">
+        </div>
+        
+        <div class="form-group">
+            <label>Комментарий к заказу (необязательно):</label>
+            <textarea id="orderComment" rows="3" placeholder="Ваши пожелания..."></textarea>
+        </div>
+        
+        <div id="orderSummary"></div>
+        
+        <button class="checkout-btn" onclick="completeOrder()">Подтвердить заказ</button>
+    </div>
+
+    <script>
+        let cart = [];
+        const cartModal = document.getElementById('cartModal');
+        const cartCount = document.getElementById('cartCount');
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        const emptyCart = document.getElementById('emptyCart');
+        const checkoutModal = document.getElementById('checkoutModal');
+        const overlay = document.getElementById('overlay');
+        const paymentMethod = document.getElementById('paymentMethod');
+        const bankContainer = document.getElementById('bankContainer');
+        const bankSelect = document.getElementById('bankSelect');
+        const orderSummary = document.getElementById('orderSummary');
+        
+        // Обработчики для выбора способа оплаты
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', function() {
+                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+                this.classList.add('selected');
+                paymentMethod.value = this.getAttribute('data-method');
+            });
+        });
+        
+        // Показать выбор банка только для способа "Карты"
+        paymentMethod.addEventListener('change', function() {
+            if (this.value === 'Карты') {
+                bankContainer.style.display = 'block';
+            } else {
+                bankContainer.style.display = 'none';
+            }
+        });
+        
+        function addToCart(name, price) {
+            cart.push({name, price});
+            updateCart();
+            // Показать уведомление о добавлении в корзину
+            showNotification(`Товар "${name}" добавлен в корзину!`);
+        }
+        
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+        
+        function updateCart() {
+            cartCount.textContent = cart.length;
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '';
+                emptyCart.style.display = 'block';
+                cartTotal.textContent = 'Итого: 0 руб';
+                return;
+            }
+            
+            emptyCart.style.display = 'none';
+            
+            let itemsHTML = '';
+            let total = 0;
+            
+            cart.forEach((item, index) => {
+                itemsHTML += `
+                    <div class="cart-item">
+                        <div>${item.name}</div>
+                        <div>${item.price} руб</div>
+                        <button onclick="removeFromCart(${index})">×</button>
+                    </div>
+                `;
+                total += item.price;
+            });
+            
+            cartItems.innerHTML = itemsHTML;
+            cartTotal.textContent = `Итого: ${total} руб`;
+        }
+        
+        function toggleCart() {
+            if (cartModal.style.display === 'block') {
+                cartModal.style.display = 'none';
+            } else {
+                cartModal.style.display = 'block';
+            }
+        }
+        
+        function openCheckoutModal() {
+            if (cart.length === 0) {
+                showNotification('Корзина пуста!');
+                return;
+            }
+            
+            // Заполняем сводку заказа
+            let summaryHTML = '<div class="note"><strong>Состав заказа:</strong><ul>';
+            let total = 0;
+            
+            cart.forEach(item => {
+                summaryHTML += `<li>${item.name} - ${item.price} руб</li>`;
+                total += item.price;
+            });
+            
+            summaryHTML += `</ul><p><strong>Итого: ${total} руб</strong></p></div>`;
+            orderSummary.innerHTML = summaryHTML;
+            
+            // Показываем модальное окно
+            checkoutModal.style.display = 'block';
+            overlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeCheckoutModal() {
+            checkoutModal.style.display = 'none';
+            overlay.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        function completeOrder() {
+            const selectedPayment = paymentMethod.value;
+            const selectedBank = bankSelect.value;
+            const userTelegram = document.getElementById('userTelegram').value;
+            const comment = document.getElementById('orderComment').value;
+            
+            if (!userTelegram) {
+                showNotification('Пожалуйста, укажите ваш Telegram для связи');
+                return;
+            }
+            
+            // Формируем сообщение для Telegram
+            let message = `Заказ из магазина аккаунтов:%0A%0A`;
+            
+            // Состав заказа
+            message += `📦 *Состав заказа:*%0A`;
+            let total = 0;
+            cart.forEach(item => {
+                message += `- ${item.name} - ${item.price} руб%0A`;
+                total += item.price;
+            });
+            message += `%0A💰 *Итого: ${total} руб*%0A%0A`;
+            
+            // Способ оплаты
+            message += `💳 *Способ оплаты:* ${selectedPayment}`;
+            if (selectedPayment === 'Карты') {
+                message += ` (${selectedBank})`;
+            }
+            message += `%0A%0A`;
+            
+            // Контактные данные
+            message += `👤 *Telegram заказчика:* ${userTelegram}%0A%0A`;
+            
+            // Комментарий
+            if (comment) {
+                message += `📝 *Комментарий:* ${comment}%0A%0A`;
+            }
+            
+            // Дата заказа
+            const now = new Date();
+            message += `🕒 *Заказ оформлен:* ${now.toLocaleString('ru-RU')}`;
+            
+            // Открываем Telegram с готовым сообщением
+            window.open(`https://t.me/KIRG_17?text=${message}`, '_blank');
+            
+            // Очищаем корзину и закрываем модальные окна
+            cart = [];
+            updateCart();
+            closeCheckoutModal();
+            toggleCart();
+            
+            showNotification('Заказ оформлен! Открыт чат с продавцом для подтверждения.');
+        }
+        
+        function showNotification(message) {
+            // Создаем уведомление
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #4caf50;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+                z-index: 10000;
+                font-weight: bold;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Удаляем уведомление через 3 секунды
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.5s';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 3000);
+        }
+        
+        function openTab(evt, tabName) {
+            const tabcontent = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            
+            const tablinks = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+        
+        function openPaymentTab(evt, tabName) {
+            const tabcontent = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            
+            const tablinks = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+        
+        // Закрытие модальных окон при клике вне их области
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.cart-container') && !event.target.closest('.cart-modal')) {
+                cartModal.style.display = 'none';
+            }
+            
+            if (event.target === overlay) {
+                closeCheckoutModal();
+            }
+        });
+        
+        // Закрытие модальных окон при касании вне их области на мобильных устройствах
+        document.addEventListener('touchstart', function(event) {
+            if (!event.target.closest('.cart-container') && !event.target.closest('.cart-modal')) {
+                cartModal.style.display = 'none';
+            }
+            
+            if (event.target === overlay) {
+                closeCheckoutModal();
+            }
+        });
+        
+        updateCart();
+    </script>
+</body>
+</html> 
